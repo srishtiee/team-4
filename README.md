@@ -132,6 +132,10 @@ Demonstrates Fetch/Compute/Store cycles by counting down from 10 to 0.
 
 See [docs/CPU_SCHEMATIC.md](docs/CPU_SCHEMATIC.md) for detailed architecture documentation.
 
+### Architecture Diagram
+
+![CPU Architecture Diagram](docs/architecture_diagram.png)
+
 ## Design Principles
 
 1. **Modularity**: Each component is self-contained and well-defined
