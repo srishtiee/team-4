@@ -8,6 +8,8 @@
 #include "cpu/control_unit.hpp"
 #include <vector>
 #include <string>
+#include <iomanip>
+#include <iostream>
 
 namespace emulator {
 
@@ -86,6 +88,20 @@ public:
     // Print RAM
     void print_ram(uint16_t start = 0, uint16_t length = 256) const {
         memory.print_dump(start, length);
+    }
+    
+    // Print memory values as decimal numbers
+    void print_decimal(uint16_t start = 0, uint16_t count = 10) const {
+        std::cout << "\n=== Memory as Decimal Numbers ===" << std::endl;
+        std::cout << "Starting address: 0x" << std::hex << std::setw(4) << std::setfill('0') 
+                  << start << std::dec << std::endl;
+        for (uint16_t i = 0; i < count; i++) {
+            uint16_t addr = start + (i * 2);  // Each value is 2 bytes (16-bit word)
+            uint16_t value = memory.read_word(addr);
+            std::cout << "[" << std::setw(2) << std::setfill('0') << i << "] "
+                      << "0x" << std::hex << std::setw(4) << std::setfill('0') << addr 
+                      << std::dec << ": " << static_cast<int16_t>(value) << std::endl;
+        }
     }
     
     // Print memory as instructions

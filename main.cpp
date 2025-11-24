@@ -26,6 +26,7 @@ void print_help() {
     std::cout << "gpr             - Print General Purpose Registers" << std::endl;
     std::cout << "spr             - Print Special Purpose Registers" << std::endl;
     std::cout << "ram [addr] [len]- Print RAM dump (default: 0x0000, 256 bytes)" << std::endl;
+    std::cout << "dec [addr] [cnt]- Print memory as decimal numbers (default: 0x0040, 10 words)" << std::endl;
     std::cout << "state           - Print complete CPU state" << std::endl;
     std::cout << "trace on/off    - Enable/disable instruction tracing" << std::endl;
     std::cout << "reset           - Reset CPU to initial state" << std::endl;
@@ -142,6 +143,22 @@ int main(int argc, char* argv[]) {
                 len = static_cast<uint16_t>(std::stoul(len_str));
             }
             emu.print_ram(addr, len);
+        } else if (cmd == "dec" || cmd == "decimal" || cmd == "print") {
+            uint16_t addr = 0x0040;  // Default to Fibonacci storage address
+            uint16_t count = 10;      // Default to 10 numbers
+            std::string addr_str, count_str;
+            ss >> addr_str >> count_str;
+            if (!addr_str.empty()) {
+                if (addr_str.substr(0, 2) == "0x") {
+                    addr = static_cast<uint16_t>(std::stoul(addr_str, nullptr, 16));
+                } else {
+                    addr = static_cast<uint16_t>(std::stoul(addr_str));
+                }
+            }
+            if (!count_str.empty()) {
+                count = static_cast<uint16_t>(std::stoul(count_str));
+            }
+            emu.print_decimal(addr, count);
         } else if (cmd == "state") {
             emu.print_state();
         } else if (cmd == "trace") {
