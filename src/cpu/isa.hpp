@@ -1,4 +1,4 @@
-git branch#pragma once
+#pragma once
 
 #include <cstdint>
 #include <string>
