@@ -25,7 +25,7 @@ This will create the `cpu_emulator` executable.
 ### Interactive Mode
 
 ```bash
-./cpu
+./cpu_emulator
 ```
 
 Available commands:
