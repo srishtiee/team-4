@@ -34,8 +34,7 @@ Available commands:
 - `step` - Execute one instruction
 - `gpr` - Print General Purpose Registers
 - `spr` - Print Special Purpose Registers
-- `ram [addr] [len]` - Print RAM dump (default: 0x0000, 256 bytes)
-- `dec [addr] [cnt]` - Print memory as decimal numbers (default: 0x0040, 10 words)
+- `ram [addr] [len]` - Print RAM dump
 - `state` - Print complete CPU state
 - `trace on/off` - Enable/disable instruction tracing
 - `reset` - Reset CPU to initial state
@@ -82,20 +81,6 @@ R1: 0x0000 (0)
 
 > run
 > state
-
-> dec
-=== Memory as Decimal Numbers ===
-Starting address: 0x0040
-[00] 0x0040: 0
-[01] 0x0042: 1
-[02] 0x0044: 1
-[03] 0x0046: 2
-[04] 0x0048: 3
-[05] 0x004a: 5
-[06] 0x004c: 8
-[07] 0x004e: 13
-[08] 0x0050: 21
-[09] 0x0052: 34
 ```
 
 ## CPU Components
@@ -138,7 +123,7 @@ Key instructions:
 Outputs "Hello, World!" using memory-mapped I/O.
 
 ### Fibonacci (`programs/fibonacci.asm`)
-Computes the first 10 Fibonacci numbers and stores them in memory starting at address 0x0040. Use the `dec` command to view the stored numbers as decimal values.
+Computes the first 10 Fibonacci numbers and stores them in memory.
 
 ### Timer (`programs/timer.asm`)
 Demonstrates Fetch/Compute/Store cycles by counting down from 10 to 0.
