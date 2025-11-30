@@ -143,6 +143,11 @@ See [docs/CPU_SCHEMATIC.md](docs/CPU_SCHEMATIC.md) for detailed architecture doc
 3. **Debuggability**: Easy inspection of registers, memory, and CPU state
 4. **Extensibility**: Easy to add new instructions or components
 
+## Videos
+1. **Fibonacci Walk Through**:
+[![Fibonacci Walkthrough](https://img.shields.io/badge/Fibonacci%20Walkthrough-Google%20Drive-blue)](https://drive.google.com/file/d/1oYj-tZLDx2MxgmqxTRa1Fyd6DLsLRBrB/view?usp=drive_link)
+2. **Architecture**:
+[![Architecture](https://img.shields.io/badge/Architecture%20Diagram-Google%20Drive-green)](https://drive.google.com/file/d/13vMmB9d0Ckdk_mBC7ShI4nOnaPx3Hor0/view?usp=drive_link)
 ## Notes
 
 - Instructions are 16 bits wide
