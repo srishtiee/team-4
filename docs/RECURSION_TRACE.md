@@ -294,11 +294,11 @@ SP: 0xFFFA
 ├─────────────────────────────────────────┤
 │ 0xFFFE: Saved n = 5                     │
 ├─────────────────────────────────────────┤
-│ 0xFFFC: Return to fact(5) (0x0042)     │ ← Frame 2: factorial(4)
+│ 0xFFFC: Return to fact(5) (0x0042)      │ ← Frame 2: factorial(4)
 ├─────────────────────────────────────────┤
 │ 0xFFFA: Saved n = 4                     │
 ├─────────────────────────────────────────┤
-│ 0xFFF8: Return to fact(4) (0x0042)     │ ← Frame 3: factorial(3)
+│ 0xFFF8: Return to fact(4) (0x0042)      │ ← Frame 3: factorial(3)
 ├─────────────────────────────────────────┤
 │ 0xFFF6: Saved n = 3                     │
 ├─────────────────────────────────────────┤
@@ -306,7 +306,7 @@ SP: 0xFFFA
 ├─────────────────────────────────────────┤
 │ 0xFFF2: Saved n = 2                     │
 ├─────────────────────────────────────────┤
-│ 0xFFF0: Return to fact(2) (0x0042)     │ ← Frame 5: factorial(1)
+│ 0xFFF0: Return to fact(2) (0x0042)      │ ← Frame 5: factorial(1)
 ├─────────────────────────────────────────┤
 │ 0xFFEE: (base case, returns immediately)│
 └─────────────────────────────────────────┘
