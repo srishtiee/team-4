@@ -12,7 +12,7 @@
 ;   - Return address: R6 (caller sets R6 before call)
 ;   - Stack pointer: R5 (holds current stack pointer, initialized to 0xFFFF)
 ;
-; Note: In a real system, you'd have CALL/RET instructions or PC access.
+; Note: In a real system, we'd have CALL/RET instructions or PC access.
 ; For this demo, we use R6 to pass return addresses and R5 for stack pointer.
 
 main:
@@ -115,7 +115,7 @@ fact_return:
     LDI R2, #2
     ADD R5, R5, R2     ; Pop saved n (increment R5 by 2)
     
-    ; Now compute n * result (result is in R0, n is in R1)
+    ; Compute n * result (result is in R0, n is in R1)
     ; Multiplication using repeated addition: result = result * n
     ; Algorithm: product = 0; for i = 0 to n-1: product += result
     ; Save the recursive result to a safe location first
