@@ -17,7 +17,7 @@ The factorial program computes `factorial(5) = 120` using a recursive function, 
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/srishtiee/team-4.git
 cd team-4
 ```
 
