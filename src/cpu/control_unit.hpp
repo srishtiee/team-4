@@ -193,8 +193,10 @@ public:
                 // So we need: new_PC = current_PC + 2 + offset = current_PC + 2 + (target - current_PC - 2) = target
                 // But the instruction format is PC = RS1 + IMM, so if RS1=0: PC = 0 + IMM (wrong!)
                 // Fix: For relative jumps (RS1 == 0), use current PC as base
+                // Use extended 9-bit immediate for jump instructions
+                int16_t offset = instr.get_jump_immediate();
                 uint16_t base = (gprs[instr.rs1] == 0) ? (sprs.PC + 2) : gprs[instr.rs1];
-                uint16_t new_pc = static_cast<uint16_t>(base + static_cast<int16_t>(instr.imm));
+                uint16_t new_pc = static_cast<uint16_t>(base + offset);
                 sprs.PC = new_pc;
                 pc_updated = true;
                 
@@ -207,8 +209,10 @@ public:
             case Opcode::JZ: {
                 // Jump if zero flag is set
                 if (sprs.flags.Z) {
+                    // Use extended 9-bit immediate for jump instructions
+                    int16_t offset = instr.get_jump_immediate();
                     uint16_t base = (gprs[instr.rs1] == 0) ? (sprs.PC + 2) : gprs[instr.rs1];
-                    uint16_t new_pc = static_cast<uint16_t>(base + static_cast<int16_t>(instr.imm));
+                    uint16_t new_pc = static_cast<uint16_t>(base + offset);
                     sprs.PC = new_pc;
                     pc_updated = true;
                     if (trace_enabled) {
@@ -225,8 +229,10 @@ public:
             case Opcode::JNZ: {
                 // Jump if zero flag is not set
                 if (!sprs.flags.Z) {
+                    // Use extended 9-bit immediate for jump instructions
+                    int16_t offset = instr.get_jump_immediate();
                     uint16_t base = (gprs[instr.rs1] == 0) ? (sprs.PC + 2) : gprs[instr.rs1];
-                    uint16_t new_pc = static_cast<uint16_t>(base + static_cast<int16_t>(instr.imm));
+                    uint16_t new_pc = static_cast<uint16_t>(base + offset);
                     sprs.PC = new_pc;
                     pc_updated = true;
                     if (trace_enabled) {

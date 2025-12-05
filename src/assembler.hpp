@@ -201,27 +201,35 @@ public:
                 case cpu::Opcode::JNZ: {
                     // JMP/JZ/JNZ RS1, IMM (target address = RS1 + IMM)
                     // For labels, compute relative offset from current PC
+                    // Jump instructions now support 9-bit signed immediate (-256 to +255)
                     if (tokens.size() < 3) throw std::runtime_error("Jump instruction requires 2 operands");
                     instr.rd = 0;
                     instr.rs1 = parse_register(tokens[1]);
                     
                     // Check if second operand is a label
                     std::string imm_str = tokens[2];
+                    int16_t offset;
                     if (labels.find(imm_str) != labels.end()) {
                         // Label: compute relative offset
                         uint16_t target = labels.at(imm_str);
-                        int16_t offset = static_cast<int16_t>(target) - static_cast<int16_t>(addr + 2);
-                        // Since immediate is only 6 bits, we can only jump within -32 to +31
-                        // For larger jumps, we'd need to load address into register first
-                        if (offset < -32 || offset > 31) {
-                            throw std::runtime_error("Jump offset out of range (-32 to 31): " + std::to_string(offset) + 
+                        offset = static_cast<int16_t>(target) - static_cast<int16_t>(addr + 2);
+                        // Check if offset is within 9-bit signed range (-256 to +255)
+                        if (offset < -256 || offset > 255) {
+                            throw std::runtime_error("Jump offset out of range (-256 to 255): " + std::to_string(offset) + 
                                                     " (target: 0x" + std::to_string(target) + ", current: 0x" + std::to_string(addr) + ")");
                         }
-                        instr.imm = static_cast<int8_t>(offset);
                     } else {
                         // Immediate value
-                        instr.imm = static_cast<int8_t>(parse_immediate(imm_str, labels, addr));
+                        offset = static_cast<int16_t>(parse_immediate(imm_str, labels, addr));
+                        // Check range for immediate values too
+                        if (offset < -256 || offset > 255) {
+                            throw std::runtime_error("Jump immediate out of range (-256 to 255): " + std::to_string(offset));
+                        }
                     }
+                    // Store the 9-bit signed value in jump_imm field
+                    instr.jump_imm = offset;
+                    // Also store lower 8 bits in imm for compatibility
+                    instr.imm = static_cast<int8_t>(offset & 0xFF);
                     instr.rs2 = 0;
                     instr.is_immediate = true;
                     break;

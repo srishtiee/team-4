@@ -27,6 +27,8 @@ void print_help() {
     std::cout << "spr             - Print Special Purpose Registers" << std::endl;
     std::cout << "ram [addr] [len]- Print RAM dump (default: 0x0000, 256 bytes)" << std::endl;
     std::cout << "dec [addr] [cnt]- Print memory as decimal numbers (default: 0x0040, 10 words)" << std::endl;
+    std::cout << "stack [cnt]     - Print stack contents (default: 20 words)" << std::endl;
+    std::cout << "frames          - Print stack frames (for function calls)" << std::endl;
     std::cout << "state           - Print complete CPU state" << std::endl;
     std::cout << "trace on/off    - Enable/disable instruction tracing" << std::endl;
     std::cout << "reset           - Reset CPU to initial state" << std::endl;
@@ -159,6 +161,16 @@ int main(int argc, char* argv[]) {
                 count = static_cast<uint16_t>(std::stoul(count_str));
             }
             emu.print_decimal(addr, count);
+        } else if (cmd == "stack") {
+            uint16_t count = 20;
+            std::string count_str;
+            ss >> count_str;
+            if (!count_str.empty()) {
+                count = static_cast<uint16_t>(std::stoul(count_str));
+            }
+            emu.print_stack(count);
+        } else if (cmd == "frames") {
+            emu.print_frames();
         } else if (cmd == "state") {
             emu.print_state();
         } else if (cmd == "trace") {
