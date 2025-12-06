@@ -2,6 +2,9 @@
 
 A software CPU emulator demonstrating **function calling and recursion** through a recursive factorial program. This project shows how executables are laid out in memory, how function calls are handled, and how recursion is carried out using stack frames.
 
+## Video Link
+[Program Layout and Execution Walkthrough](https://drive.google.com/file/d/1vOFgQTE7auNNG0jvVXWGBovKbeqhjMGr/view?usp=drive_link)
+
 ## Overview
 
 This project implements a complete CPU emulator with support for:
@@ -143,29 +146,7 @@ Starting address: 0x0040
 
 This confirms that `factorial(5) = 120` was computed and stored.
 
-### Step 5: Inspect Stack Contents
-
-View the stack to see how function calls were managed:
-
-```bash
-> stack 20
-```
-
-**Expected output:**
-```
-=== Stack Contents ===
-Stack Pointer (SP): 0xFFFF
-Stack grows downward (from 0xFFFF)
-
-Address    Value (hex)    Value (dec)
-0xFFFF:    0x0000         0
-0xFFFE:    0x0000         0
-...
-```
-
-After program completion, the stack should be empty (all zeros) since all stack frames have been popped.
-
-### Step 6: View Stack Frames (During Execution)
+### Step 5: View Stack Frames (During Execution)
 
 To see stack frames during execution, you need to inspect the stack **while the program is running**:
 
