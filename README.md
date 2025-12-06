@@ -146,24 +146,6 @@ Starting address: 0x0040
 
 This confirms that `factorial(5) = 120` was computed and stored.
 
-### Step 5: View Stack Frames (During Execution)
-
-To see stack frames during execution, you need to inspect the stack **while the program is running**:
-
-```bash
-> load programs/factorial.asm
-> trace on
-> step    # Step through a few instructions
-> step    # ... continue until you're inside a recursive call
-> stack 20    # View stack contents
-> frames      # View stack frames
-```
-
-The `frames` command will show:
-- Active stack frames
-- Return addresses
-- Saved parameters (n values)
-- Frame boundaries
 
 ## Understanding the Execution
 
