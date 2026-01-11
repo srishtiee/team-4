@@ -136,6 +136,112 @@ public:
         (void)length; // Suppress unused parameter warning
         std::cout << "Memory dump to " << filename << " (not implemented)" << std::endl;
     }
+    
+    // Print stack contents
+    void print_stack(uint16_t count = 20) const {
+        std::cout << "\n=== Stack Contents ===" << std::endl;
+        std::cout << "Stack Pointer (SP): 0x" << std::hex << std::setw(4) << std::setfill('0') 
+                  << sprs.SP << std::dec << std::endl;
+        std::cout << "Stack grows downward (from 0xFFFF)" << std::endl;
+        std::cout << std::endl;
+        
+        uint16_t stack_top = 0xFFFF;
+        uint16_t stack_bottom = (sprs.SP >= count * 2) ? (sprs.SP - count * 2) : 0xFE00;
+        if (stack_bottom < 0xFE00) stack_bottom = 0xFE00;
+        
+        std::cout << "Address    Value (hex)  Value (dec)  Interpretation" << std::endl;
+        std::cout << "---------------------------------------------------" << std::endl;
+        
+        for (uint16_t addr = stack_top; addr >= stack_bottom && addr >= sprs.SP; addr -= 2) {
+            uint16_t value = memory.read_word(addr);
+            std::cout << "0x" << std::hex << std::setw(4) << std::setfill('0') << addr 
+                      << "    0x" << std::setw(4) << std::setfill('0') << value
+                      << "      " << std::dec << std::setw(6) << static_cast<int16_t>(value);
+            
+            // Try to interpret as address (if it's in code range)
+            if (value >= 0x0000 && value < 0x0100) {
+                std::cout << "  [Possible return addr: 0x" << std::hex << std::setw(4) 
+                          << std::setfill('0') << value << std::dec << "]";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::dec;
+    }
+    
+    // Print stack frames (for function calls)
+    void print_frames() const {
+        std::cout << "\n=== Stack Frames ===" << std::endl;
+        
+        // Use R5 as the actual stack pointer (factorial program uses R5, not SP register)
+        int16_t r5_value = gprs[5];
+        uint16_t actual_sp = static_cast<uint16_t>(r5_value);
+        
+        std::cout << "Stack Pointer (R5): 0x" << std::hex << std::setw(4) << std::setfill('0') 
+                  << actual_sp << std::dec << " (" << static_cast<int16_t>(r5_value) << ")" << std::endl;
+        std::cout << "SP Register: 0x" << std::hex << std::setw(4) << std::setfill('0') 
+                  << sprs.SP << std::dec << std::endl;
+        std::cout << std::endl;
+        
+        uint16_t stack_top = 0xFFFF;
+        int frame_num = 1;
+        
+        // Walk down the stack from top (0xFFFF) to current stack pointer (R5)
+        // Stack grows downward, so items are stored from 0xFFFF down to R5
+        uint16_t scan_addr = stack_top;
+        
+        while (scan_addr >= actual_sp && scan_addr >= 0xFF00 && scan_addr <= 0xFFFF) {
+            uint16_t value = memory.read_word(scan_addr);
+            
+            // Check if this looks like a return address (in code range)
+            if (value >= 0x0000 && value < 0x0100) {
+                std::cout << "Frame " << frame_num << ":" << std::endl;
+                std::cout << "  Return Address: 0x" << std::hex << std::setw(4) 
+                          << std::setfill('0') << value << std::dec << std::endl;
+                std::cout << "  Frame Location: 0x" << std::hex << std::setw(4) 
+                          << std::setfill('0') << scan_addr << std::dec << std::endl;
+                
+                // Check for saved values at the next lower address (stack grows downward)
+                if (scan_addr >= 0xFF02) {
+                    uint16_t next_addr = scan_addr - 2;  // Next item is at lower address
+                    if (next_addr >= actual_sp) {  // Make sure we're still in valid stack range
+                        uint16_t next_value = memory.read_word(next_addr);
+                        // Check if it's likely a parameter value (small positive number, not a code address)
+                        if (next_value >= 0x0001 && next_value <= 0x00FF && 
+                            (next_value < 0x0000 || next_value >= 0x0100)) {
+                            std::cout << "  Saved Parameter (n): " << std::dec 
+                                      << static_cast<int16_t>(next_value) << " (0x" << std::hex 
+                                      << std::setw(4) << std::setfill('0') << next_value << std::dec << ")" << std::endl;
+                        } else if (next_value >= 0x0000 && next_value < 0x0100) {
+                            // Could be another return address (nested call)
+                            std::cout << "  Next Return Address: 0x" << std::hex << std::setw(4) 
+                                      << std::setfill('0') << next_value << std::dec << std::endl;
+                        } else {
+                            std::cout << "  Saved Value: 0x" << std::hex << std::setw(4) 
+                                      << std::setfill('0') << next_value << " (" << std::dec 
+                                      << static_cast<int16_t>(next_value) << ")" << std::endl;
+                        }
+                    }
+                }
+                std::cout << std::endl;
+                frame_num++;
+            }
+            
+            // Move to next word (downward in address, which is upward in stack)
+            if (scan_addr >= 0xFF02) {
+                scan_addr -= 2;
+            } else {
+                break;
+            }
+        }
+        
+        if (frame_num == 1) {
+            std::cout << "No stack frames detected (no return addresses found)" << std::endl;
+            std::cout << "Note: Stack pointer (R5) is at 0x" << std::hex << std::setw(4) 
+                      << std::setfill('0') << actual_sp << std::dec << std::endl;
+            std::cout << "Try checking stack contents with 'stack' command." << std::endl;
+        }
+        std::cout << std::dec;
+    }
 };
 
 } // namespace emulator

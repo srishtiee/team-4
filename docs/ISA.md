@@ -25,6 +25,14 @@ All instructions are 16 bits wide, encoded as follows:
 [5:0]   - Immediate Value (6 bits, signed -32 to 31)
 ```
 
+**Note**: For jump instructions (JMP, JZ, JNZ), the RD field [11:9] is used to extend the immediate value, providing a 9-bit signed immediate (-256 to +255):
+```
+[15:12] - Opcode (4 bits)
+[11:9]  - Extended Immediate Upper 3 bits (for jumps only)
+[8:6]   - Source Register 1 (RS1) (3 bits, 0-7)
+[5:0]   - Extended Immediate Lower 6 bits
+```
+
 ## Registers
 
 ### General Purpose Registers (GPRs)
@@ -72,9 +80,9 @@ All instructions are 16 bits wide, encoded as follows:
 
 | Opcode | Mnemonic | Format | Description |
 |--------|----------|--------|-------------|
-| 0xC | JMP | JMP RS1, IMM | PC = RS1 + IMM |
-| 0xD | JZ | JZ RS1, IMM | If Z flag: PC = RS1 + IMM |
-| 0xE | JNZ | JNZ RS1, IMM | If !Z flag: PC = RS1 + IMM |
+| 0xC | JMP | JMP RS1, IMM | PC = RS1 + IMM (IMM: 9-bit signed, -256 to +255) |
+| 0xD | JZ | JZ RS1, IMM | If Z flag: PC = RS1 + IMM (IMM: 9-bit signed, -256 to +255) |
+| 0xE | JNZ | JNZ RS1, IMM | If !Z flag: PC = RS1 + IMM (IMM: 9-bit signed, -256 to +255) |
 | 0xF | HLT | HLT | Halt execution |
 
 ### Special
